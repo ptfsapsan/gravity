@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use damirka\JWT\UserTrait;
 use Yii;
 use yii\base\BaseObject;
 use yii\base\Exception;
@@ -15,7 +16,28 @@ class User extends BaseObject implements IdentityInterface
     public $password;
     public $role;
     public $authKey;
+    public const ROLE_ADMIN = 'admin';
+    public const ROLE_USER = 'user';
 
+    public static function getRoles()
+    {
+        return [
+            self::ROLE_USER => 'Пользователь',
+            self::ROLE_ADMIN => 'Администратор',
+        ];
+    }
+
+    // Override this method
+    protected static function getSecretKey()
+    {
+        return Yii::$app->params['jwtSecretKey'];
+    }
+
+    // And this one if you wish
+    protected static function getHeaderToken()
+    {
+        return [];
+    }
 
     /**
      * {@inheritdoc}
@@ -71,6 +93,35 @@ class User extends BaseObject implements IdentityInterface
     }
 
     /**
+     * @param int $id
+     * @throws \yii\db\Exception
+     */
+    public static function delete(int $id)
+    {
+        Yii::$app->db->createCommand()->delete('user', "id = $id")->execute();
+    }
+
+    /**
+     * @param array $data
+     * @throws Exception
+     */
+    public static function add(array $data)
+    {
+        Yii::$app->db->createCommand()
+            ->insert('user', [
+                'username' => $data['username'],
+                'password' => Yii::$app->getSecurity()->generatePasswordHash($data['password']),
+                'role' => $data['role'],
+            ])->execute();;
+    }
+
+    public static function isAdmin($username)
+    {
+        return $username == Yii::$app->params['adminUsername'];
+
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getId()
@@ -103,5 +154,13 @@ class User extends BaseObject implements IdentityInterface
     public function validatePassword($password)
     {
         return Yii::$app->getSecurity()->validatePassword($password, $this->password);
+    }
+
+    public static function getAllUsers()
+    {
+        return (new Query())
+            ->from('user')
+            ->orderBy('id')
+            ->all();
     }
 }

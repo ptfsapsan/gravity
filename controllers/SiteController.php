@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use Yii;
+use yii\base\Exception;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\Response;
@@ -68,6 +69,7 @@ class SiteController extends Controller
      * Login action.
      *
      * @return Response|string
+     * @throws Exception
      */
     public function actionLogin()
     {

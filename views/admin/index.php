@@ -1,9 +1,57 @@
 <?php
 /* @var $this yii\web\View */
-?>
-<h1>admin/index</h1>
 
-<p>
-    You may change the content of this page by modifying
-    the file <code><?= __FILE__; ?></code>.
-</p>
+use app\models\User;
+use yii\bootstrap\ActiveForm;
+use yii\helpers\Html; ?>
+    <link rel="stylesheet" href="/css/admin/index.css">
+
+<h2>Добавить пользователя</h2>
+<?php $form = ActiveForm::begin([
+    'id' => 'login-form',
+    'layout' => 'horizontal',
+    'fieldConfig' => [
+        'template' => "{label}\n<div class=\"col-lg-3\">{input}</div>\n<div class=\"col-lg-8\">{error}</div>",
+        'labelOptions' => ['class' => 'col-lg-1 control-label'],
+    ],
+]); ?>
+<input type="hidden" name="act" value="add">
+
+<?=$form->field($model, 'username')->textInput(['autofocus' => true])?>
+
+<?=$form->field($model, 'password')->passwordInput()?>
+<?=$form->field($model, 'role')->radioList(User::getRoles())?>
+
+    <div class="form-group">
+        <div class="col-lg-offset-1 col-lg-11">
+            <?=Html::submitButton('Добавить', ['class' => 'btn btn-primary', 'name' => 'login-button'])?>
+        </div>
+    </div>
+    <h2>Список пользователей</h2>
+
+<?php ActiveForm::end();
+
+    if (count($users)) { ?>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Имя пользователя</th>
+            <th>Роль</th>
+            <th></th>
+        </tr>
+        <?php foreach ($users as $user) { ?>
+            <tr>
+                <td><?=$user['id']?></td>
+                <td><?=$user['username']?></td>
+                <td>
+                    <?=Html::radioList(
+                        'role[' . $user['id'] . ']',
+                        $user['role'],
+                        User::getRoles()
+                    )?>
+                </td>
+                <td><a href="/admin?act=delete&id=<?=$user['id']?>">Удалить</a></td>
+            </tr>
+        <?php } ?>
+    </table>
+<?php }

@@ -1,5 +1,8 @@
 <?php
 
+use sizeg\jwt\Jwt;
+use sizeg\jwt\JwtValidationData;
+
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 
@@ -52,7 +55,11 @@ $config = [
         ],
         'authManager' => [
             'class' => 'yii\rbac\DbManager',
-//            'defaultRoles' => ['admin', 'user'],
+        ],
+        'jwt' => [
+            'class' => Jwt::class,
+            'key' => 'secret',
+            'jwtValidationData' => JwtValidationData::class,
         ],
     ],
     'params' => $params,

@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\base\Exception;
 use yii\base\Model;
 
 /**
@@ -15,6 +16,7 @@ class LoginForm extends Model
 {
     public $username;
     public $password;
+    public $role;
     public $rememberMe = true;
 
     private $_user = false;
@@ -41,6 +43,7 @@ class LoginForm extends Model
      *
      * @param string $attribute the attribute currently being validated
      * @param array $params the additional name-value pairs given in the rule
+     * @throws Exception
      */
     public function validatePassword($attribute, $params)
     {
@@ -56,6 +59,7 @@ class LoginForm extends Model
     /**
      * Logs in a user using the provided username and password.
      * @return bool whether the user is logged in successfully
+     * @throws Exception
      */
     public function login()
     {
@@ -69,6 +73,7 @@ class LoginForm extends Model
      * Finds user by [[username]]
      *
      * @return User|null
+     * @throws Exception
      */
     public function getUser()
     {
