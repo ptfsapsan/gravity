@@ -52,7 +52,9 @@ AppAsset::register($this);
                 )
                 . Html::endForm()
                 . '</li>'
-            )
+            ),
+            !Yii::$app->user->isGuest && Yii::$app->user->identity->role == 'admin'
+                ? (['label' => 'Admin', 'url' => ['/admin']]) : ''
         ],
     ]);
     NavBar::end();
