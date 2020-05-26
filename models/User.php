@@ -28,6 +28,17 @@ class User extends BaseObject implements IdentityInterface
     }
 
     // Override this method
+    public static function changeUserRole(int $id)
+    {
+        $user = (new Query())
+            ->select('role')
+            ->from('user')
+            ->where(['id' => $id])
+            ->one();
+        $newRole = $user['role'] == self::ROLE_USER ? self::ROLE_ADMIN : self::ROLE_USER;
+        (new Query())->createCommand()->update('user', ['role' => $newRole], ['id' => $id])->execute();
+    }
+
     protected static function getSecretKey()
     {
         return Yii::$app->params['jwtSecretKey'];

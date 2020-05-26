@@ -43,8 +43,15 @@ class AdminController extends Controller
     public function actionIndex()
     {
         $get = Yii::$app->request->get();
-        if (!empty($get['act']) && $get['act'] == 'delete') {
-            User::delete($get['id']);
+        if (!empty($get['act'])) {
+            switch ($get['act']) {
+                case 'delete':
+                    User::delete($get['id']);
+                    break;
+                case 'role':
+                    User::changeUserRole($get['id']);
+                    break;
+            }
             return $this->redirect('admin');
         }
         $post = Yii::$app->request->post();

@@ -47,11 +47,21 @@ use yii\helpers\Html; ?>
                     <?=Html::radioList(
                         'role[' . $user['id'] . ']',
                         $user['role'],
-                        User::getRoles()
+                        User::getRoles(),
+                        ['data-id' => $user['id'], 'class' => 'user-roles']
                     )?>
                 </td>
                 <td><a href="/admin?act=delete&id=<?=$user['id']?>">Удалить</a></td>
             </tr>
         <?php } ?>
     </table>
+
+    <script type="text/javascript">
+        const elements = document.getElementsByClassName('user-roles');
+        for (let i in elements) {
+            elements[i].addEventListener('click', function (e) {
+                location.href = '/admin?act=role&id=' + this.getAttribute('data-id');
+            }, false);
+        }
+    </script>
 <?php }
